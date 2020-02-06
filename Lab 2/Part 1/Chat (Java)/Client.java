@@ -87,7 +87,7 @@ public class Client extends JFrame {
 
       // display connection information
       displayMessage( "Connected to: " + 
-         client.getInetAddress().getHostName() );
+         client.getInetAddress().getCanonicalHostName() + ", " + client.getInetAddress().getHostAddress());
    }
 
    // get streams to send and receive data
@@ -201,8 +201,8 @@ public class Client extends JFrame {
       Client application;
 
       if ( args.length == 0 )
-         //application = new Client( "127.0.0.1" );
-         application = new Client( "192.168.137.174" );
+         application = new Client( "127.0.0.1" );
+         // application = new Client( "192.168.137.174" );
       else
          application = new Client( args[ 0 ] );
 

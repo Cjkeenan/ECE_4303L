@@ -92,9 +92,10 @@ public class Server extends JFrame {
    private void waitForConnection() throws IOException
    {
       displayMessage( "Waiting for connection\n" );
-      connection = server.accept(); // allow server to accept connection            
+      connection = server.accept(); // allow server to accept connection
+          
       displayMessage( "Connection " + counter + " received from: " +
-         connection.getInetAddress().getHostName() );
+         connection.getInetAddress().getCanonicalHostName() + ", " + connection.getInetAddress().getHostAddress());
    }
 
    // get streams to send and receive data
