@@ -237,8 +237,8 @@ public class Client extends JFrame {
 
       if ( args.length == 0 )
          // application = new Client( "127.0.0.1" );
-         application = new Client( "192.168.137.224" );
-         // application = new Client( "192.168.137.1" );
+         // application = new Client( "192.168.137.224" );
+         application = new Client( "192.168.137.1" );
       else
          application = new Client( args[ 0 ] );
 
