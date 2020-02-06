@@ -8,6 +8,7 @@ import java.awt.event.*;
 import javax.swing.*;
 import java.util.Scanner;
 import java.util.regex.Pattern;
+import java.time.LocalTime;
 
 public class Server extends JFrame {
    private JTextField enterField;
@@ -90,6 +91,7 @@ public class Server extends JFrame {
       connection = server.accept(); // allow server to accept connection
 
       // display connection information
+      String systemTime = java.time.LocalTime.now().toString();
       InetAddress addr = connection.getInetAddress();
       String hostNameClient = addr.getCanonicalHostName();
       String hostNameServer = addr.getLocalHost().getCanonicalHostName();
@@ -100,7 +102,8 @@ public class Server extends JFrame {
       // String macServer = "";
       String macClient = "";
 
-      displayMessage("Server (Me): " + hostNameServer + ", " + ipServer + ", " + macServer);
+      displayMessage("Time of Connection: " + systemTime);
+      displayMessage("\nServer (Me): " + hostNameServer + ", " + ipServer + ", " + macServer);
       displayMessage("\nClient: " + hostNameClient + ", " + ipClient + ", " + macClient);
    }
 

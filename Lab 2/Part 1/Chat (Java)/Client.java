@@ -5,6 +5,7 @@ import java.net.*;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import java.time.LocalTime;
 
 public class Client extends JFrame {
    private JTextField enterField;
@@ -86,6 +87,7 @@ public class Client extends JFrame {
       client = new Socket( InetAddress.getByName( chatServer ), 12345 );
       
       // display connection information
+      String systemTime = java.time.LocalTime.now().toString();
       InetAddress addr = client.getInetAddress();
       String hostNameServer = addr.getCanonicalHostName();
       String hostNameClient = addr.getLocalHost().getCanonicalHostName();
@@ -96,7 +98,8 @@ public class Client extends JFrame {
       String macServer = "";
       // String macClient = "";
 
-      displayMessage( "Server: " + hostNameServer + ", " + ipServer + ", " + macServer);
+      displayMessage( "Time of Connection: " + systemTime);
+      displayMessage( "\nServer: " + hostNameServer + ", " + ipServer + ", " + macServer);
       displayMessage( "\nClient (Me): " + hostNameClient + ", " + ipClient + ", " + macClient);
    }
 
