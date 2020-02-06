@@ -2,8 +2,8 @@
 import socket
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 # addr = socket.gethostname()
-# addr = '192.168.137.174'
-addr = '127.0.0.1'
+addr = '192.168.137.1'
+# addr = '127.0.0.1'
 port = 4000
 server.connect((addr,port))
 
