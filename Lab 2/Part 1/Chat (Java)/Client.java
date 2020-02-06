@@ -84,11 +84,43 @@ public class Client extends JFrame {
 
       // create Socket to make connection to server
       client = new Socket( InetAddress.getByName( chatServer ), 12345 );
-
+      
       // display connection information
-      displayMessage( "Connected to: " + 
-         client.getInetAddress().getCanonicalHostName() + ", " + client.getInetAddress().getHostAddress());
+      InetAddress addr = client.getInetAddress();
+      String hostNameServer = addr.getCanonicalHostName();
+      String hostNameClient = addr.getLocalHost().getCanonicalHostName();
+      String ipServer = addr.getHostAddress();
+      String ipClient = addr.getLocalHost().getHostAddress();
+      // String macServer = getMacAddress(addr);
+      String macClient = getMacAddress(addr.getLocalHost());
+      String macServer = "";
+      // String macClient = "";
+
+      displayMessage( "Server: " + hostNameServer + ", " + ipServer + ", " + macServer);
+      displayMessage( "\nClient (Me): " + hostNameClient + ", " + ipClient + ", " + macClient);
    }
+
+   private static String getMacAddress(InetAddress ip) {
+      String address = null;
+      try {
+
+          NetworkInterface network = NetworkInterface.getByInetAddress(ip);
+          byte[] mac = network.getHardwareAddress();
+
+          StringBuilder sb = new StringBuilder();
+          for (int i = 0; i < mac.length; i++) {
+              sb.append(String.format("%02X%s", mac[i], (i < mac.length - 1) ? "-" : ""));
+          }
+          address = sb.toString();
+
+      } catch (SocketException ex) {
+
+          ex.printStackTrace();
+
+      }
+
+      return address;
+  }
 
    // get streams to send and receive data
    private void getStreams() throws IOException
@@ -201,8 +233,9 @@ public class Client extends JFrame {
       Client application;
 
       if ( args.length == 0 )
-         application = new Client( "127.0.0.1" );
-         // application = new Client( "192.168.137.174" );
+         // application = new Client( "127.0.0.1" );
+         application = new Client( "192.168.137.224" );
+         // application = new Client( "192.168.137.1" );
       else
          application = new Client( args[ 0 ] );
 

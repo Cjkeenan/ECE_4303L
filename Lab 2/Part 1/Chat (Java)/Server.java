@@ -6,6 +6,8 @@ import java.net.*;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import java.util.Scanner;
+import java.util.regex.Pattern;
 
 public class Server extends JFrame {
    private JTextField enterField;
@@ -17,63 +19,57 @@ public class Server extends JFrame {
    private int counter = 1;
 
    // set up GUI
-   public Server()
-   {
-      super( "Server" );
+   public Server() {
+      super("Server");
 
       Container container = getContentPane();
 
       // create enterField and register listener
       enterField = new JTextField();
-      enterField.setEditable( false );
-      enterField.addActionListener(
-         new ActionListener() {
+      enterField.setEditable(false);
+      enterField.addActionListener(new ActionListener() {
 
-            // send message to client
-            public void actionPerformed( ActionEvent event )
-            {
-               sendData( event.getActionCommand() );
-               enterField.setText( "" );
-            }
-         }  
-      ); 
+         // send message to client
+         public void actionPerformed(ActionEvent event) {
+            sendData(event.getActionCommand());
+            enterField.setText("");
+         }
+      });
 
-      container.add( enterField, BorderLayout.NORTH );
+      container.add(enterField, BorderLayout.NORTH);
 
       // create displayArea
       displayArea = new JTextArea();
-      container.add( new JScrollPane( displayArea ), 
-         BorderLayout.CENTER );
+      container.add(new JScrollPane(displayArea), BorderLayout.CENTER);
 
-      setSize( 300, 150 );
-      setVisible( true );
+      setSize(300, 150);
+      setVisible(true);
 
    } // end Server constructor
 
-   // set up and run server 
-   public void runServer()
-   {
+   // set up and run server
+   public void runServer() {
       // set up server to receive connections; process connections
       try {
 
          // Step 1: Create a ServerSocket.
-         server = new ServerSocket( 12345, 100 );
+         server = new ServerSocket(12345, 100);
 
-         while ( true ) {
+         while (true) {
 
             try {
                waitForConnection(); // Step 2: Wait for a connection.
-               getStreams();        // Step 3: Get input & output streams.
+               getStreams(); // Step 3: Get input & output streams.
                processConnection(); // Step 4: Process connection.
             }
 
-            // process EOFException when client closes connection 
-            catch ( EOFException eofException ) {
-               System.err.println( "Server terminated connection" );
+            // process EOFException when client closes connection
+            catch (EOFException eofException) {
+               System.err.println("Server terminated connection");
             }
 
             finally {
-               closeConnection();   // Step 5: Close connection.
+               closeConnection(); // Step 5: Close connection.
                ++counter;
             }
 
@@ -82,134 +78,177 @@ public class Server extends JFrame {
       } // end try
 
       // process problems with I/O
-      catch ( IOException ioException ) {
+      catch (IOException ioException) {
          ioException.printStackTrace();
       }
 
    } // end method runServer
 
    // wait for connection to arrive, then display connection info
-   private void waitForConnection() throws IOException
-   {
-      displayMessage( "Waiting for connection\n" );
+   private void waitForConnection() throws IOException {
+      displayMessage("Waiting for connection\n");
       connection = server.accept(); // allow server to accept connection
-          
-      displayMessage( "Connection " + counter + " received from: " +
-         connection.getInetAddress().getCanonicalHostName() + ", " + connection.getInetAddress().getHostAddress());
+
+      // display connection information
+      InetAddress addr = connection.getInetAddress();
+      String hostNameClient = addr.getCanonicalHostName();
+      String hostNameServer = addr.getLocalHost().getCanonicalHostName();
+      String ipClient = addr.getHostAddress();
+      String ipServer = addr.getLocalHost().getHostAddress();
+      // String macClient = getMacAddressByUseArp(ipClient);
+      String macServer = getMacAddress(addr.getLocalHost());
+      // String macServer = "";
+      String macClient = "";
+
+      displayMessage("Server (Me): " + hostNameServer + ", " + ipServer + ", " + macServer);
+      displayMessage("\nClient: " + hostNameClient + ", " + ipClient + ", " + macClient);
+   }
+
+   private static String getMacAddress(InetAddress ip) {
+      String address = null;
+      try {
+
+         NetworkInterface network = NetworkInterface.getByInetAddress(ip);
+         byte[] mac = network.getHardwareAddress();
+
+         StringBuilder sb = new StringBuilder();
+         for (int i = 0; i < mac.length; i++) {
+            sb.append(String.format("%02X%s", mac[i], (i < mac.length - 1) ? "-" : ""));
+         }
+         address = sb.toString();
+
+      } catch (SocketException ex) {
+
+         ex.printStackTrace();
+
+      }
+
+      return address;
+   }
+
+   private static String getMacAddressByUseArp(String ip) throws IOException{
+      String cmd = "arp -a " + ip;
+      Scanner s = new Scanner(Runtime.getRuntime().exec(cmd).getInputStream());
+      String str = null;
+      Pattern pattern = Pattern
+            .compile("(([0-9A-Fa-f]{2}[-:]){5}[0-9A-Fa-f]{2})|(([0-9A-Fa-f]{4}\\.){2}[0-9A-Fa-f]{4})");
+      try {
+         while (s.hasNext()) {
+            str = s.next();
+            Matcher matcher = pattern.matcher(str);
+            if (matcher.matches()) {
+               break;
+            } else {
+               str = null;
+            }
+         }
+      } finally {
+         s.close();
+      }
+      return (str != null) ? str.toUpperCase() : null;
    }
 
    // get streams to send and receive data
-   private void getStreams() throws IOException
-   {
+   private void getStreams() throws IOException {
       // set up output stream for objects
-      output = new ObjectOutputStream( connection.getOutputStream() );
+      output = new ObjectOutputStream(connection.getOutputStream());
       output.flush(); // flush output buffer to send header information
 
       // set up input stream for objects
-      input = new ObjectInputStream( connection.getInputStream() );
+      input = new ObjectInputStream(connection.getInputStream());
 
-      displayMessage( "\nGot I/O streams\n" );
+      displayMessage("\nGot I/O streams\n");
    }
 
    // process connection with client
-   private void processConnection() throws IOException
-   {
+   private void processConnection() throws IOException {
       // send connection successful message to client
       String message = "Connection successful";
-      sendData( message );
+      sendData(message);
 
       // enable enterField so server user can send messages
-      setTextFieldEditable( true );
+      setTextFieldEditable(true);
 
       do { // process messages sent from client
 
          // read message and display it
          try {
-            message = ( String ) input.readObject();
-            displayMessage( "\n" + message );
+            message = (String) input.readObject();
+            displayMessage("\n" + message);
          }
 
          // catch problems reading from client
-         catch ( ClassNotFoundException classNotFoundException ) {
-            displayMessage( "\nUnknown object type received" );
+         catch (ClassNotFoundException classNotFoundException) {
+            displayMessage("\nUnknown object type received");
          }
 
-      } while ( !message.equals( "CLIENT>>> TERMINATE" ) );
+      } while (!message.equals("CLIENT>>> TERMINATE"));
 
    } // end method processConnection
 
    // close streams and socket
-   private void closeConnection() 
-   {
-      displayMessage( "\nTerminating connection\n" );
-      setTextFieldEditable( false ); // disable enterField
+   private void closeConnection() {
+      displayMessage("\nTerminating connection\n");
+      setTextFieldEditable(false); // disable enterField
 
       try {
          output.close();
          input.close();
          connection.close();
-      }
-      catch( IOException ioException ) {
+      } catch (IOException ioException) {
          ioException.printStackTrace();
       }
    }
 
    // send message to client
-   private void sendData( String message )
-   {
+   private void sendData(String message) {
       // send object to client
       try {
-         output.writeObject( "SERVER>>> " + message );
+         output.writeObject("SERVER>>> " + message);
          output.flush();
-         displayMessage( "\nSERVER>>> " + message );
+         displayMessage("\nSERVER>>> " + message);
       }
 
       // process problems sending object
-      catch ( IOException ioException ) {
-         displayArea.append( "\nError writing object" );
+      catch (IOException ioException) {
+         displayArea.append("\nError writing object");
       }
    }
 
-   // utility method called from other threads to manipulate 
+   // utility method called from other threads to manipulate
    // displayArea in the event-dispatch thread
-   private void displayMessage( final String messageToDisplay )
-   {
+   private void displayMessage(String messageToDisplay) {
       // display message from event-dispatch thread of execution
-      SwingUtilities.invokeLater(
-         new Runnable() {  // inner class to ensure GUI updates properly
+      SwingUtilities.invokeLater(new Runnable() { // inner class to ensure GUI updates properly
 
-            public void run() // updates displayArea
-            {
-               displayArea.append( messageToDisplay );
-               displayArea.setCaretPosition( 
-                  displayArea.getText().length() );
-            }
+         public void run() // updates displayArea
+         {
+            displayArea.append(messageToDisplay);
+            displayArea.setCaretPosition(displayArea.getText().length());
+         }
 
-         }  // end inner class
+      } // end inner class
 
       ); // end call to SwingUtilities.invokeLater
    }
 
-   // utility method called from other threads to manipulate 
+   // utility method called from other threads to manipulate
    // enterField in the event-dispatch thread
-   private void setTextFieldEditable( final boolean editable )
-   {
-      // display message from event-dispatch  thread of execution
-      SwingUtilities.invokeLater(
-         new Runnable() {  // inner class to ensure GUI updates properly
+   private void setTextFieldEditable(boolean editable) {
+      // display message from event-dispatch thread of execution
+      SwingUtilities.invokeLater(new Runnable() { // inner class to ensure GUI updates properly
 
-            public void run()  // sets enterField's editability
-            {
-               enterField.setEditable( editable );
-            }
+         public void run() // sets enterField's editability
+         {
+            enterField.setEditable(editable);
+         }
 
-         }  // end inner class
+      } // end inner class
 
       ); // end call to SwingUtilities.invokeLater
    }
 
-   public static void main( String args[] )
-   {
+   public static void main(String args[]) {
       Server application = new Server();
       application.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
       application.runServer();
