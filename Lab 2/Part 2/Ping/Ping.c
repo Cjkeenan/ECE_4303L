@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <winsock.h>
-
+#pragma comment(lib, "Ws2_32.lib")
 #include "ping.h"
 
 // Internal Functions
