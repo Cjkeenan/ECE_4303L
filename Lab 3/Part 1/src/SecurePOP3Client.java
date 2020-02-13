@@ -8,16 +8,15 @@ public class SecurePOP3Client {
 
   public static void main(String[] args) {
     
-    Properties props = new Properties(); 
+    Properties props = new Properties();
 
-    String host = "utopia.poly.edu";
+    String host = "outlook.office365.com";
     String provider = "pop3";
 
     try {
 
       // Connect to the POP3 server
-      Session session = Session.getDefaultInstance(props, 
-       new MailAuthenticator());
+      Session session = Session.getDefaultInstance(props, new MailAuthenticator());
       Store store = session.getStore(provider);
       store.connect(host, null, null);
       

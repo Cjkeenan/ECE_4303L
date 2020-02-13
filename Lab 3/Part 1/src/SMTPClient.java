@@ -9,13 +9,11 @@ public class SMTPClient extends JFrame {
 
   private JButton     sendButton   = new JButton("Send Message"); 
   private JLabel      fromLabel    = new JLabel("From: "); 
-  private JLabel      passLabel    = new JLabel("From Password: "); 
   private JLabel      toLabel      = new JLabel("To: "); 
   private JLabel      hostLabel    = new JLabel("SMTP Server: "); 
   private JLabel      portLabel    = new JLabel("Port: "); 
   private JLabel      subjectLabel = new JLabel("Subject: "); 
   private JTextField  fromField    = new JTextField(40); 
-  private JTextField  passField    = new JTextField(40); 
   private JTextField  toField      = new JTextField(40); 
   private JTextField  hostField    = new JTextField(40); 
   private JTextField  portField    = new JTextField(40); 
@@ -35,20 +33,18 @@ public class SMTPClient extends JFrame {
     String from = "cjkeenan@live.com";
     
     JPanel labels = new JPanel();
-    labels.setLayout(new GridLayout(6, 1));
+    labels.setLayout(new GridLayout(5, 1));
     labels.add(hostLabel);
     labels.add(portLabel);
     labels.add(fromLabel);
-    labels.add(passLabel);
     labels.add(toLabel);
     labels.add(subjectLabel);
     
     JPanel fields = new JPanel();
-    fields.setLayout(new GridLayout(6, 1));
+    fields.setLayout(new GridLayout(5, 1));
     fields.add(hostField);
     fields.add(portField);
     fields.add(fromField);
-    fields.add(passField);
     fields.add(toField);
     fields.add(subjectField);
 
@@ -72,11 +68,10 @@ public class SMTPClient extends JFrame {
     contentPane.add(south, BorderLayout.SOUTH);       
     
     this.pack(); 
-    
   }
 
   class SendAction implements ActionListener {
-   
+  
     public void actionPerformed(ActionEvent evt) {
       
       try {
@@ -86,12 +81,7 @@ public class SMTPClient extends JFrame {
         props.put("mail.smtp.host", hostField.getText());
         props.put("mail.smtp.port", portField.getText());
         
-        Authenticator auth = new Authenticator() {
-          protected PasswordAuthentication getPasswordAuthentication() {
-              return new PasswordAuthentication(fromField.getText(), passField.getText());
-          }};
-        Session mailConnection = Session.getInstance(props, auth);
-
+        Session mailConnection = Session.getInstance(props, new MailAuthenticator(fromField.getText()));
         final Message msg = new MimeMessage(mailConnection);
   
         Address to = new InternetAddress(toField.getText());
@@ -114,8 +104,8 @@ public class SMTPClient extends JFrame {
             }
           } 
         };
-        Thread t = new Thread(r);
-        t.start();
+      Thread t = new Thread(r);
+      t.start();
         
         message.setText("");
       }
@@ -123,9 +113,7 @@ public class SMTPClient extends JFrame {
         // I should really bring up a more specific error dialog here.
         ex.printStackTrace(); 
       }
-      
     } 
-    
   }
 
   public static void main(String[] args) {
@@ -136,7 +124,6 @@ public class SMTPClient extends JFrame {
     // other programs that use this class may not want to exit 
     // the application when the SMTPClient window closes.
     client.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    client.setVisible(true);;
-
+    client.setVisible(true);
   }
 }

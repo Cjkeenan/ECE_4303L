@@ -9,7 +9,7 @@ public class POP3Client {
     
     Properties props = new Properties(); 
 
-    String host = "utopia.poly.edu";
+    String host = "outlook.office365.com";
     String username = "eharold";
     String password = "mypassword";
     String provider = "pop3";

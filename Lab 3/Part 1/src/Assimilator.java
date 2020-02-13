@@ -7,7 +7,6 @@ public class Assimilator {
 
   public static void main(String[] args) {
     final String username = "cjkeenan@live.com";
-    final String password = "drjyymaozmymfqsg";
 
     Properties props = new Properties();
     props.put("mail.smtp.auth", "true");
@@ -15,12 +14,7 @@ public class Assimilator {
     props.put("mail.smtp.host", "outlook.office365.com");
     props.put("mail.smtp.port", "587");
 
-    Session session = Session.getInstance(props,
-      new javax.mail.Authenticator() {
-        protected PasswordAuthentication getPasswordAuthentication() {
-            return new PasswordAuthentication(username, password);
-        }
-      });
+    Session session = Session.getInstance(props, new MailAuthenticator(username));
 
     try {
       System.out.println("Enter recipient's email address: ");
