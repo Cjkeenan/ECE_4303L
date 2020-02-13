@@ -9,42 +9,52 @@ public class SMTPClient extends JFrame {
 
   private JButton     sendButton   = new JButton("Send Message"); 
   private JLabel      fromLabel    = new JLabel("From: "); 
+  private JLabel      passLabel    = new JLabel("From Password: "); 
   private JLabel      toLabel      = new JLabel("To: "); 
   private JLabel      hostLabel    = new JLabel("SMTP Server: "); 
+  private JLabel      portLabel    = new JLabel("Port: "); 
   private JLabel      subjectLabel = new JLabel("Subject: "); 
   private JTextField  fromField    = new JTextField(40); 
+  private JTextField  passField    = new JTextField(40); 
   private JTextField  toField      = new JTextField(40); 
   private JTextField  hostField    = new JTextField(40); 
+  private JTextField  portField    = new JTextField(40); 
   private JTextField  subjectField = new JTextField(40); 
   private JTextArea   message      = new JTextArea(40, 72); 
   private JScrollPane jsp          = new JScrollPane(message);
 
   public SMTPClient() {
-    
+  
     super("SMTP Client");
     Container contentPane = this.getContentPane();
-    contentPane.setLayout(new BorderLayout());  
+    contentPane.setLayout(new BorderLayout());
+    
+    // Defaults
+    String host = "smtp.office365.com";
+    String port = "587";
+    String from = "cjkeenan@live.com";
     
     JPanel labels = new JPanel();
-    labels.setLayout(new GridLayout(4, 1));
+    labels.setLayout(new GridLayout(6, 1));
     labels.add(hostLabel);
+    labels.add(portLabel);
+    labels.add(fromLabel);
+    labels.add(passLabel);
+    labels.add(toLabel);
+    labels.add(subjectLabel);
     
     JPanel fields = new JPanel();
-    fields.setLayout(new GridLayout(4, 1));
-    String host = System.getProperty("mail.host", "");
-    hostField.setText(host);
+    fields.setLayout(new GridLayout(6, 1));
     fields.add(hostField);
-    
-    labels.add(toLabel);
-    fields.add(toField);
-
-    String from = System.getProperty("mail.from", "");
-    fromField.setText(from);
-    labels.add(fromLabel);
+    fields.add(portField);
     fields.add(fromField);
-
-    labels.add(subjectLabel);
+    fields.add(passField);
+    fields.add(toField);
     fields.add(subjectField);
+
+    hostField.setText(host);
+    portField.setText(port);
+    fromField.setText(from);
     
     Box north = Box.createHorizontalBox();
     north.add(labels);
@@ -71,9 +81,17 @@ public class SMTPClient extends JFrame {
       
       try {
         Properties props = new Properties();
-        props.put("mail.host", hostField.getText());
-         
-        Session mailConnection = Session.getInstance(props, null);
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true");
+        props.put("mail.smtp.host", hostField.getText());
+        props.put("mail.smtp.port", portField.getText());
+        
+        Authenticator auth = new Authenticator() {
+          protected PasswordAuthentication getPasswordAuthentication() {
+              return new PasswordAuthentication(fromField.getText(), passField.getText());
+          }};
+        Session mailConnection = Session.getInstance(props, auth);
+
         final Message msg = new MimeMessage(mailConnection);
   
         Address to = new InternetAddress(toField.getText());

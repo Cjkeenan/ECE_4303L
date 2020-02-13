@@ -33,7 +33,6 @@ public class SearchClient {
       if (args.length > 1) {
         SearchTerm[] terms = new SearchTerm[args.length-1];
         for (int i = 1; i < args.length; i++) {
-          Address a = new InternetAddress(args[i]);
           terms[i-1] = new FromTerm(new InternetAddress(args[i]));
         }
         if (terms.length > 1) term = new OrTerm(terms);
