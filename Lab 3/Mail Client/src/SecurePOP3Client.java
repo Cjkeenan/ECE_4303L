@@ -32,7 +32,7 @@ public class SecurePOP3Client {
       Message[] messages = inbox.getMessages();
       for (int i = 0; i < messages.length; i++) {
         System.out.println("------------ Message " + (i+1) 
-         + " ------------");
+        + " ------------");
         messages[i].writeTo(System.out);
       } 
 

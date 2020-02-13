@@ -8,7 +8,7 @@ public class MailAuthenticator extends Authenticator {
 
   private JDialog passwordDialog = new JDialog(new JFrame(), true);  
   private JLabel mainLabel = new JLabel(
-   "Please enter your user name and password: ");
+  "Please enter your user name and password: ");
   private JLabel userLabel = new JLabel("User name: ");
   private JLabel passwordLabel = new JLabel("Password: ");
   private JTextField usernameField = new JTextField(20);

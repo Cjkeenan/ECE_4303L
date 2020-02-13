@@ -62,13 +62,13 @@ public class SMTPApplet extends Applet {
   }
 
   class SendAction implements ActionListener {
-   
+  
     public void actionPerformed(ActionEvent evt) {
       
       try {
         Properties props = new Properties();
         props.put("mail.host", getCodeBase().getHost());
-         
+        
         Session mailConnection = Session.getInstance(props, null);
         final Message msg = new MimeMessage(mailConnection);
   

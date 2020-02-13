@@ -8,7 +8,7 @@ public class FlagsClient {
     
     if (args.length == 0) {
       System.err.println(
-       "Usage: java FlagsClient protocol://username@host/foldername");
+      "Usage: java FlagsClient protocol://username@host/foldername");
       return; 
     }
     
@@ -17,7 +17,7 @@ public class FlagsClient {
     try {
 
       Session session = Session.getDefaultInstance(new Properties(), 
-       new MailAuthenticator(server.getUsername()));
+      new MailAuthenticator(server.getUsername()));
 
       // Connect to the server and open the folder
       Folder folder = session.getFolder(server);
@@ -31,22 +31,22 @@ public class FlagsClient {
       Message[] messages = folder.getMessages();
       for (int i = 0; i < messages.length; i++) {
         System.out.println("------------ Message " + (i+1) 
-         + " ------------");
+        + " ------------");
         // Get the headers
         String from = InternetAddress.toString(messages[i].getFrom());
         if (from != null) System.out.println("From: " + from);
         String replyTo = InternetAddress.toString(
-         messages[i].getReplyTo());
+        messages[i].getReplyTo());
         if (replyTo != null) System.out.println("Reply-to: " 
-         + replyTo);
+        + replyTo);
         String to = InternetAddress.toString(
-         messages[i].getRecipients(Message.RecipientType.TO));
+        messages[i].getRecipients(Message.RecipientType.TO));
         if (to != null) System.out.println("To: " + to);
         String cc = InternetAddress.toString(
         messages[i].getRecipients(Message.RecipientType.CC));
         if (cc != null) System.out.println("Cc: " + cc);
         String bcc = InternetAddress.toString(
-         messages[i].getRecipients(Message.RecipientType.BCC));
+        messages[i].getRecipients(Message.RecipientType.BCC));
         if (bcc != null) System.out.println("Bcc: " + to);
         String subject = messages[i].getSubject();
         if (subject != null) System.out.println("Subject: " + subject);

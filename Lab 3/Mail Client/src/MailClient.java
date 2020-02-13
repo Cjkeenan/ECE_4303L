@@ -9,7 +9,7 @@ public class MailClient {
     
     if (args.length == 0) {
       System.err.println(
-       "Usage: java MailClient protocol://username:password@host/foldername");
+      "Usage: java MailClient protocol://username:password@host/foldername");
       return; 
     }
     
@@ -18,7 +18,7 @@ public class MailClient {
     try {
 
       Session session = Session.getDefaultInstance(new Properties(), 
-       null);
+      null);
 
       // Connect to the server and open the folder
       Folder folder = session.getFolder(server);
@@ -32,7 +32,7 @@ public class MailClient {
       Message[] messages = folder.getMessages();
       for (int i = 0; i < messages.length; i++) {
         System.out.println("------------ Message " + (i+1) 
-         + " ------------");
+        + " ------------");
         messages[i].writeTo(System.out);
       } 
 

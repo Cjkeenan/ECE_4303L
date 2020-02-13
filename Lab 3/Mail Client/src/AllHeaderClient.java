@@ -9,7 +9,7 @@ public class AllHeaderClient {
     
     if (args.length == 0) {
       System.err.println(
-       "Usage: java AllHeaderClient protocol://username@host/foldername");
+      "Usage: java AllHeaderClient protocol://username@host/foldername");
       return; 
     }
     
@@ -18,7 +18,7 @@ public class AllHeaderClient {
     try {
 
       Session session = Session.getDefaultInstance(new Properties(), 
-       new MailAuthenticator(server.getUsername()));
+      new MailAuthenticator(server.getUsername()));
 
       // Connect to the server and open the folder
       Folder folder = session.getFolder(server);
@@ -32,7 +32,7 @@ public class AllHeaderClient {
       Message[] messages = folder.getMessages();
       for (int i = 0; i < messages.length; i++) {
         System.out.println("------------ Message " + (i+1) 
-         + " ------------");
+        + " ------------");
         // Here's the difference...
         Enumeration headers = messages[i].getAllHeaders();
         while (headers.hasMoreElements()) {

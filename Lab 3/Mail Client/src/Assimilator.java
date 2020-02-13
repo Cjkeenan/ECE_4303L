@@ -33,6 +33,5 @@ public class Assimilator {
     catch (Exception ex) {
       ex.printStackTrace(); 
     }
-    
   }
 }

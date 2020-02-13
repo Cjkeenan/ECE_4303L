@@ -10,7 +10,7 @@ public class SearchClient {
     
     if (args.length == 0) {
       System.err.println(
-       "Usage: java SearchClient protocol://username@host/foldername");
+      "Usage: java SearchClient protocol://username@host/foldername");
       return; 
     }
     
@@ -19,7 +19,7 @@ public class SearchClient {
     try {
 
       Session session = Session.getDefaultInstance(new Properties(), 
-       new MailAuthenticator(server.getUsername()));
+      new MailAuthenticator(server.getUsername()));
 
       // Connect to the server and open the folder
       Folder folder = session.getFolder(server);
@@ -49,8 +49,8 @@ public class SearchClient {
       }
       for (int i = 0; i < messages.length; i++) {
         System.out.println("------------ Message " + (i+1) 
-         + " ------------");
-         
+        + " ------------");
+        
         // Print message headers
         Enumeration headers = messages[i].getAllHeaders();
         while (headers.hasMoreElements()) {
@@ -88,7 +88,7 @@ public class SearchClient {
   }
   
   public static void processMultipart(Multipart mp) 
-   throws MessagingException {
+  throws MessagingException {
 
     for (int i = 0; i < mp.getCount(); i++) {
       processPart(mp.getBodyPart(i));
