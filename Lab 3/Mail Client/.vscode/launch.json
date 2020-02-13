@@ -8,7 +8,8 @@
             "type": "java",
             "name": "Debug (Launch) - Current File",
             "request": "launch",
-            "mainClass": "${file}"
+            "mainClass": "${file}",
+            "args": ["smtp://cjkeenan@smtp.office365.com:587/inbox"]
         },
         {
             "type": "java",
@@ -22,8 +23,7 @@
             "name": "Debug (Launch)-AllPartsClient<Mail Client_173bbbcc>",
             "request": "launch",
             "mainClass": "AllPartsClient",
-            "projectName": "Mail Client_173bbbcc",
-            "args": ["smtp://cjkeenan@smtp.office365.com:587/inbox"]
+            "projectName": "Mail Client_173bbbcc"
         },
         {
             "type": "java",
