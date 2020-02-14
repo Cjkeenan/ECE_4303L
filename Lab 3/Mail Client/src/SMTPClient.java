@@ -7,7 +7,12 @@ import java.awt.*;
 
 public class SMTPClient extends JFrame {
 
-  private JButton     sendButton   = new JButton("Send Message"); 
+  /**
+   *
+   */
+  private static final long serialVersionUID = 1L;
+  
+  private JButton sendButton = new JButton("Send Message");
   private JLabel      fromLabel    = new JLabel("From: "); 
   private JLabel      toLabel      = new JLabel("To: "); 
   private JLabel      hostLabel    = new JLabel("SMTP Server: "); 

@@ -1,7 +1,6 @@
 import javax.mail.*;
 import javax.mail.internet.*;
 import java.util.*;
-import java.io.*;
 
 public class Assimilator {
 
