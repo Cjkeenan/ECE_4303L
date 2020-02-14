@@ -13,80 +13,18 @@
         },
         {
             "type": "java",
-            "name": "Debug (Launch)-AllHeaderClient<Mail Client_173bbbcc>",
-            "request": "launch",
-            "mainClass": "AllHeaderClient",
-            "projectName": "Mail Client_173bbbcc"
-        },
-        {
-            "type": "java",
-            "name": "Debug (Launch)-AllPartsClient<Mail Client_173bbbcc>",
-            "request": "launch",
-            "mainClass": "AllPartsClient",
-            "projectName": "Mail Client_173bbbcc"
-        },
-        {
-            "type": "java",
-            "name": "Debug (Launch)-Assimilator<Mail Client_173bbbcc>",
+            "name": "Debug (Launch)-Assimilator<Mail Client_29b103b6>",
             "request": "launch",
             "mainClass": "Assimilator",
-            "projectName": "Mail Client_173bbbcc"
+            "projectName": "Mail Client_29b103b6"
         },
         {
             "type": "java",
-            "name": "Debug (Launch)-AttributeClient<Mail Client_173bbbcc>",
-            "request": "launch",
-            "mainClass": "AttributeClient",
-            "projectName": "Mail Client_173bbbcc"
-        },
-        {
-            "type": "java",
-            "name": "Debug (Launch)-FlagsClient<Mail Client_173bbbcc>",
-            "request": "launch",
-            "mainClass": "FlagsClient",
-            "projectName": "Mail Client_173bbbcc"
-        },
-        {
-            "type": "java",
-            "name": "Debug (Launch)-HeaderClient<Mail Client_173bbbcc>",
-            "request": "launch",
-            "mainClass": "HeaderClient",
-            "projectName": "Mail Client_173bbbcc"
-        },
-        {
-            "type": "java",
-            "name": "Debug (Launch)-MailClient<Mail Client_173bbbcc>",
-            "request": "launch",
-            "mainClass": "MailClient",
-            "projectName": "Mail Client_173bbbcc"
-        },
-        {
-            "type": "java",
-            "name": "Debug (Launch)-POP3Client<Mail Client_173bbbcc>",
-            "request": "launch",
-            "mainClass": "POP3Client",
-            "projectName": "Mail Client_173bbbcc"
-        },
-        {
-            "type": "java",
-            "name": "Debug (Launch)-SMTPClient<Mail Client_173bbbcc>",
+            "name": "Debug (Launch)-SMTPClient<Mail Client_29b103b6>",
             "request": "launch",
             "mainClass": "SMTPClient",
-            "projectName": "Mail Client_173bbbcc"
-        },
-        {
-            "type": "java",
-            "name": "Debug (Launch)-SearchClient<Mail Client_173bbbcc>",
-            "request": "launch",
-            "mainClass": "SearchClient",
-            "projectName": "Mail Client_173bbbcc"
-        },
-        {
-            "type": "java",
-            "name": "Debug (Launch)-SecurePOP3Client<Mail Client_173bbbcc>",
-            "request": "launch",
-            "mainClass": "SecurePOP3Client",
-            "projectName": "Mail Client_173bbbcc"
+            "projectName": "Mail Client_29b103b6",
+            "args": ["smtp://cjkeenan@smtp.office365.com:587/inbox"]
         }
     ]
 }
