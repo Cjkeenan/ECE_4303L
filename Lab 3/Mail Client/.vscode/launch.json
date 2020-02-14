@@ -8,22 +8,21 @@
             "type": "java",
             "name": "Debug (Launch) - Current File",
             "request": "launch",
-            "mainClass": "${file}",
-            "args": ["smtp://cjkeenan@smtp.office365.com:587/inbox"]
+            "mainClass": "${file}"
         },
         {
             "type": "java",
-            "name": "Debug (Launch)-Assimilator<Mail Client_29b103b6>",
+            "name": "Debug (Launch)-Assimilator<Mail Client_173bbbcc>",
             "request": "launch",
             "mainClass": "Assimilator",
-            "projectName": "Mail Client_29b103b6"
+            "projectName": "Mail Client_173bbbcc"
         },
         {
             "type": "java",
-            "name": "Debug (Launch)-SMTPClient<Mail Client_29b103b6>",
+            "name": "Debug (Launch)-SMTPClient<Mail Client_173bbbcc>",
             "request": "launch",
             "mainClass": "SMTPClient",
-            "projectName": "Mail Client_29b103b6",
+            "projectName": "Mail Client_173bbbcc",
             "args": ["smtp://cjkeenan@smtp.office365.com:587/inbox"]
         }
     ]
