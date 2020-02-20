@@ -8,12 +8,11 @@ public class POP3Client {
 public static void main(String[] args) {
   
   String provider = "pop3";
-  String host = "outlook.office365.com";
 
   Properties props = new Properties();
   props.put("mail.pop3.auth", "true");
   props.put("mail.pop3.ssl.enable", "true");
-  props.put("mail.pop3.host", host);
+  props.put("mail.pop3.host", "outlook.office365.com");
   props.put("mail.pop3.port", "995");
 
   try {
@@ -21,8 +20,7 @@ public static void main(String[] args) {
     // Connect to the POP3 server
     Session session = Session.getDefaultInstance(props, new MailAuthenticator());
     Store store = session.getStore(provider);
-    store.connect(host, null, null);
-    // store.connect();
+    store.connect();
     
     // Open the folder
     Folder inbox = store.getFolder("INBOX");
