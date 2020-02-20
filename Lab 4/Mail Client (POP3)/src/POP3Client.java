@@ -35,7 +35,7 @@ public class POP3Client {
       // Message[] messages = inbox.getMessages(1, 20);
       Message[] messages = inbox.getMessages();
       FileWriter myWriter = new FileWriter("messages.html");
-      for (int i = 0; i < messages.length; i++) {
+      for (int i = messages.length - 1; i >= 0; i--) {
         // System.out.println("------------ Message " + (i+1) + " ------------");
         // messages[i].writeTo(System.out);
         myWriter.write("<br><br>------------ Message " + (i+1) + " ------------<br>");
