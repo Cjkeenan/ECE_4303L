@@ -30,7 +30,8 @@ public static void main(String[] args) {
     inbox.open(Folder.READ_ONLY);
     
     // Get the messages from the server
-    Message[] messages = inbox.getMessages();
+    int messageCount = inbox.getMessageCount();
+    Message[] messages = inbox.getMessages(messageCount - 10, messageCount);
     FileWriter myWriter = new FileWriter("messages.html");
     for (int i = messages.length - 1; i >= 0; i--) {
       myWriter.write("<br><br>------------ Message " + (i+1) + " ------------<br>");

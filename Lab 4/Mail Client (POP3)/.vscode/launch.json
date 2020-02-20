@@ -12,10 +12,10 @@
         },
         {
             "type": "java",
-            "name": "Debug (Launch)-POP3Client<Mail Client (POP3)_70d33252>",
+            "name": "Debug (Launch)-POP3Client<Mail Client (POP3)_8030f28>",
             "request": "launch",
             "mainClass": "POP3Client",
-            "projectName": "Mail Client (POP3)_70d33252"
+            "projectName": "Mail Client (POP3)_8030f28"
         }
     ]
 }
