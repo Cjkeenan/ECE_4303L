@@ -46,7 +46,7 @@ public static void main(String[] args) {
   catch (Exception ex) {
     ex.printStackTrace();
   }
-    // since we brought up a GUI returning from main() won't exit
-    System.exit(0);   
+  // since we brought up a GUI returning from main() won't exit
+  System.exit(0);   
   }
 }
