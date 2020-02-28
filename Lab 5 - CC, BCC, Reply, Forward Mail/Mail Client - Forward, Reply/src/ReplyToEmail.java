@@ -15,13 +15,13 @@ public class ReplyToEmail {
    public static void main(String args[]) 
    {
       Date date = null;
-      String provider = "pop3";
+
 
       Properties props = new Properties();
       props.put("mail.pop3.auth", "true");
       props.put("mail.pop3.ssl.enable", "true");
-      props.put("mail.pop3.host", "outlook.office365.com");
-      props.put("mail.pop3.port", "995");
+      props.put("mail.pop3s.host", "outlook.office365.com");
+      props.put("mail.pop3s.port", "995");
       props.put("mail.smtp.host", "smtp.office365.com");
       props.put("mail.smtp.port", "587");
       props.put("mail.smtp.auth", "true");
@@ -36,7 +36,7 @@ public class ReplyToEmail {
 
     	 // Connect to the POP3 server
     	 Session session = Session.getDefaultInstance(props, new MailAuthenticator());
-    	 Store store = session.getStore(provider);
+    	 Store store = session.getStore("pop3s");
     	 store.connect();
     	    
          Folder folder = store.getFolder("inbox");
@@ -94,29 +94,34 @@ public class ReplyToEmail {
 
                   // Send the message by authenticating the SMTP server
                   // Create a Transport instance and call the sendMessage
-                  Transport t = session.getTransport("smtp");
+                  /*Transport t = session.getTransport("smtp");
                   try {
 	   	     //connect to the smpt server using transport instance
 		     //change the user and password accordingly	
 	             //t.connect("ekoo@cpp.edu", "aA!61090606");
+                	  
 	             t.sendMessage(replyMessage,
                         replyMessage.getAllRecipients());
                   } finally {
                      t.close();
-                  }
+                  }*/
+                  Transport.send(replyMessage);
                   System.out.println("message replied successfully ....");
 
                   // close the store and folder objects
-                  folder.close(false);
-                  store.close();
+                  //folder.close(false);
+                  //store.close();
 
                } else if ("n".equals(ans)) {
                   break;
                }
             }//end of for loop
 
-         } else {
+         }
+         else {
             System.out.println("There is no msg....");
+            folder.close(false);
+            store.close();
          }
 
       } catch (Exception e) {

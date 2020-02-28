@@ -19,18 +19,20 @@ import javax.mail.internet.MimeMultipart;
 public class FowardEmail {
 
    public static void main(String[] args) {
-		  String provider = "pop3";
-
-		  Properties props = new Properties();
-		  props.put("mail.pop3.auth", "true");
-		  props.put("mail.pop3.ssl.enable", "true");
-		  props.put("mail.pop3.host", "outlook.office365.com");
-		  props.put("mail.pop3.port", "995");
+	      Properties props = new Properties();
+	      props.put("mail.pop3.auth", "true");
+	      props.put("mail.pop3.ssl.enable", "true");
+	      props.put("mail.pop3s.host", "outlook.office365.com");
+	      props.put("mail.pop3s.port", "995");
+	      props.put("mail.smtp.host", "smtp.office365.com");
+	      props.put("mail.smtp.port", "587");
+	      props.put("mail.smtp.auth", "true");
+	      props.put("mail.smtp.starttls.enable", "true");
 
       try {
     	    // Connect to the POP3 server
     	    Session session = Session.getDefaultInstance(props, new MailAuthenticator());
-    	    Store store = session.getStore(provider);
+    	    Store store = session.getStore("pop3s");
     	    store.connect();
 
          // Create a Folder object and open the folder
@@ -69,13 +71,19 @@ public class FowardEmail {
             if (sent != null) {
                System.out.println("Sent: " + sent);
             }
-            System.out.print("Do you want to reply [y/n] : ");
+            System.out.print("Do you want to forward [y/n] : ");
             String ans = reader.readLine();
             if ("Y".equals(ans) || "y".equals(ans)) {
                Message forward = new MimeMessage(session);
                // Fill in header
+               System.out.print("Forward Email address :");
+               String fwd = reader.readLine();
                forward.setRecipients(Message.RecipientType.TO,
-               InternetAddress.parse(from));
+                       InternetAddress.parse(fwd));
+               //forward.setRecipients(Message.RecipientType.TO,
+               //InternetAddress.parse(from));
+               
+               
                forward.setSubject("Fwd: " + message.getSubject());
                forward.setFrom(new InternetAddress(to));
 
@@ -93,7 +101,7 @@ public class FowardEmail {
 
                // Send the message by authenticating the SMTP server
                // Create a Transport instance and call the sendMessage
-               Transport t = session.getTransport("smtp");
+              /* Transport t = session.getTransport("smtp");
                try {
                   //connect to the smpt server using transport instance
 		  //change the user and password accordingly
@@ -101,20 +109,26 @@ public class FowardEmail {
                   t.sendMessage(forward, forward.getAllRecipients());
                } finally {
                   t.close();
-               }
+               }*/
+               Transport.send(forward);
+               //System.out.println("message replied successfully ....");
 
                System.out.println("message forwarded successfully....");
 
             // close the store and folder objects
-            folder.close(false);
-            store.close();
+          /*  folder.close(false);
+            store.close();*/
             }// end if
 
          }// end for
    }// end if
-   } catch (Exception e) {
+         folder.close(false);
+         store.close();
+   } 
+      catch (Exception e) {
       e.printStackTrace();
    }
+      
 }
 
 }
