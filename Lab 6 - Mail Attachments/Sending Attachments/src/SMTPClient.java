@@ -30,8 +30,10 @@ public class SMTPClient extends JFrame {
   private JTextField  hostField    = new JTextField(40); 
   private JTextField  portField    = new JTextField(40); 
   private JTextField  subjectField = new JTextField(40); 
-  private JTextArea   message      = new JTextArea(40, 72); 
+  private JTextArea   message      = new JTextArea(20, 72); 
   private JScrollPane jsp          = new JScrollPane(message);
+
+  private String      attachPath   = "";
 
   public SMTPClient() {
   
@@ -42,7 +44,7 @@ public class SMTPClient extends JFrame {
     // Defaults
     String host = "smtp.office365.com";
     String port = "587";
-    String from = "cjkeenan@live.com";
+    String from = "cjkeenan@cpp.edu";
     
     JPanel labels = new JPanel();
     labels.setLayout(new GridLayout(7, 1));
@@ -129,13 +131,12 @@ public class SMTPClient extends JFrame {
         multipart.addBodyPart(messageBodyPart1);  
 
         // Setup for Attachments
-        String attachment = attachLabel.getText();
-        if(attachment.isEmpty() == false){
+        if(attachPath.isEmpty() == false){
           MimeBodyPart messageBodyPart2 = new MimeBodyPart();
 
-          DataSource source = new FileDataSource(attachment);
+          DataSource source = new FileDataSource(attachPath);
           messageBodyPart2.setDataHandler(new DataHandler(source));  
-          messageBodyPart2.setFileName(attachment);
+          messageBodyPart2.setFileName(attachLabel.getText());
 
           multipart.addBodyPart(messageBodyPart2);
         }
@@ -175,7 +176,8 @@ public class SMTPClient extends JFrame {
         // Demonstrate "Open" dialog:
         int rVal = c.showOpenDialog(null);
         if (rVal == JFileChooser.APPROVE_OPTION) {
-          attachLabel.setText(c.getCurrentDirectory().getCanonicalPath() + "\\" + c.getSelectedFile().getName());
+          attachLabel.setText(c.getSelectedFile().getName());
+          attachPath = c.getCurrentDirectory().getCanonicalPath() + "\\" + c.getSelectedFile().getName();
         }
       }
       catch (Exception ex) {
