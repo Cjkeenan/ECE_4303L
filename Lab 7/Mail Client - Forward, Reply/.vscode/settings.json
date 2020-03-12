@@ -1,0 +1,8 @@
+{
+    "java.project.referencedLibraries": [
+        "lib/**/*.jar",
+        "jar/activation.jar",
+        "jar/mail.jar"
+    ],
+    "java.dependency.packagePresentation": "hierarchical"
+}

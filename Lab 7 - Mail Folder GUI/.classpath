@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry excluding="src/" kind="src" path="Receiving Attachments"/>
+	<classpathentry kind="src" path="Receiving Attachments/src"/>
+	<classpathentry kind="lib" path="Distribution Files/activation.jar"/>
+	<classpathentry kind="lib" path="Distribution Files/mail.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
