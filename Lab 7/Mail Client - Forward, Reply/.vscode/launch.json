@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "CodeLens (Launch) - MailAppGUI",
+            "request": "launch",
+            "mainClass": "MailAppGUI",
+            "projectName": "client"
+        },
+        {
+            "type": "java",
             "name": "Debug (Launch) - Current File",
             "request": "launch",
             "mainClass": "${file}"
@@ -23,7 +30,9 @@
             "request": "launch",
             "mainClass": "SMTPClient",
             "projectName": "Mail Client_173bbbcc",
-            "args": ["smtp://cjkeenan@smtp.office365.com:587/inbox"]
+            "args": [
+                "smtp://cjkeenan@smtp.office365.com:587/inbox"
+            ]
         }
     ]
 }

@@ -36,6 +36,7 @@ import javax.swing.JTextArea;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.mail.Session;
 
 import com.sun.mail.imap.IMAPFolder;
 
@@ -54,6 +55,8 @@ import com.sun.mail.imap.IMAPFolder;
 public class ViewMailGUI extends JFrame {
 
 	private IMAPFolder inbox;
+	private IMAPFolder sent;
+	private IMAPFolder trash;
 	private ImapClient imap;
 	private DefaultListModel listmodel;
 	private JPanel panel;
@@ -101,6 +104,8 @@ public class ViewMailGUI extends JFrame {
 		list.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 		JScrollPane scrollL = new JScrollPane(list);
 		JButton refresh = new JButton("Refresh");
+		JButton delete = new JButton("Delete");
+		JButton recover = new JButton("Recover");
 
 		JPanel panel2 = new JPanel(new BorderLayout());
 		panel2.add(scrollL, BorderLayout.CENTER);
@@ -108,18 +113,33 @@ public class ViewMailGUI extends JFrame {
 		JPanel panel3 = new JPanel(new BorderLayout());
 		panel2.add(panel3, BorderLayout.SOUTH);
 		panel3.add(refresh, BorderLayout.EAST);
+		panel3.add(delete,BorderLayout.WEST);
+		panel3.add(recover,BorderLayout.CENTER);
 
 		JMenuBar menu = new JMenuBar();
 		JMenu email = new JMenu("Mail");
 		JMenu file = new JMenu("File");
+		JMenu subfolder = new JMenu("Folder");
 
 		JMenuItem compose = new JMenuItem("Compose new e-mail");
 		JMenuItem setFlags = new JMenuItem("Edit spam filter");
+		JMenuItem sentFolder = new JMenuItem ("Sent Folder");
+		JMenuItem trashFolder = new JMenuItem ("Trash Folder");
+		JMenuItem draftFolder = new JMenuItem ("Draft Folder");
+		JMenuItem archiveFolder = new JMenuItem ("Archive Folder");
+		JMenuItem junkFolder = new JMenuItem ("Junk Folder");
 
 		menu.add(file);
 		menu.add(email);
 		file.add(setFlags);
 		email.add(compose);
+		menu.add(subfolder);
+		subfolder.add(sentFolder);
+		subfolder.add(trashFolder);
+		subfolder.add(draftFolder);
+		subfolder.add(archiveFolder);
+		subfolder.add(junkFolder);
+		
 
 		panel.add(menu, BorderLayout.NORTH);
 
@@ -153,6 +173,23 @@ public class ViewMailGUI extends JFrame {
 			}
 
 		});
+		delete.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (!isRefresh) {
+					deleteSelectedMessage(list.getSelectedIndex());
+			}
+			}
+			
+		});
+		recover.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (!isRefresh) {
+					deleteSelectedMessage(list.getSelectedIndex());
+			}
+			}
+			
+		});
+		
 
 		// Add an action listener to the list refresh the email list when the
 		// refresh button is pressed.
@@ -185,7 +222,72 @@ public class ViewMailGUI extends JFrame {
 				sendMessage.setVisible(true);
 			}
 		});
+		sentFolder.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// Clear the list and recall the getEmails method.
+				isRefresh = true;
+				list.clearSelection();
+				getSent();
+				messageArea.setText("");
+				isRefresh = false;
+				openMessage = null;
 
+			}
+			
+		});
+		trashFolder.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// Clear the list and recall the getEmails method.
+				isRefresh = true;
+				list.clearSelection();
+				getTrash();
+				messageArea.setText("");
+				isRefresh = false;
+				openMessage = null;
+
+			}
+			
+		});
+		draftFolder.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// Clear the list and recall the getEmails method.
+				isRefresh = true;
+				list.clearSelection();
+				getDrafts();
+				messageArea.setText("");
+				isRefresh = false;
+				openMessage = null;
+
+			}
+			
+		});
+		archiveFolder.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// Clear the list and recall the getEmails method.
+				isRefresh = true;
+				list.clearSelection();
+				getArchive();
+				messageArea.setText("");
+				isRefresh = false;
+				openMessage = null;
+
+			}
+			
+		});
+		junkFolder.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// Clear the list and recall the getEmails method.
+				isRefresh = true;
+				list.clearSelection();
+				getJunk();
+				messageArea.setText("");
+				isRefresh = false;
+				openMessage = null;
+
+			}
+			
+		});
+		
 		// Add an action listener to the set flags
 		setFlags.addActionListener(new ActionListener() {
 			@Override
@@ -260,7 +362,39 @@ public class ViewMailGUI extends JFrame {
 		messageArea.setText(messageBodies[emails.length - index - 1]);
 
 	}
-
+	
+	protected void deleteSelectedMessage(int index){
+		try {
+			if (emails[index].getFlags().contains(Flag.SEEN)) {
+				emails[index].setFlag(Flag.DELETED, true);
+				//inbox.close(true);
+			}
+		} catch (MessagingException e2) {
+			JOptionPane.showMessageDialog(null, "Failed to delete message");
+			e2.printStackTrace();
+	}
+		/*try {			
+			inbox.open(Folder.READ_WRITE);
+		} catch (MessagingException e) {
+			//TODO Auto-generated catch block
+			e.printStackTrace();
+		}*/
+	}
+	protected void recoverSelectedMessage(int index){
+		try {
+			emails[index].setFlag(Flag.DELETED, false);
+			inbox.close(true);
+		} catch (MessagingException e2) {
+			JOptionPane.showMessageDialog(null, "Failed to recover message");
+			e2.printStackTrace();
+	}
+		try {			
+			inbox.open(Folder.READ_WRITE);
+		} catch (MessagingException e) {
+			//TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 	/**
 	 * Recursive method that converts each part of the message to a string.
 	 * 
@@ -278,7 +412,9 @@ public class ViewMailGUI extends JFrame {
 		if (type.contains("TEXT/")) {
 			return content.toString();
 
-		} else if (type.contains("multipart/")) {
+		} 
+		
+		else if (type.contains("multipart/")) {
 
 			Multipart multipart = (Multipart) content;
 			StringBuilder sb = new StringBuilder();
@@ -289,8 +425,9 @@ public class ViewMailGUI extends JFrame {
 			for (int x = 0; x < multipart.getCount(); x++) {
 
 				BodyPart bodyPart = multipart.getBodyPart(x);
-				sb.append(convertMessageToString(bodyPart.getContentType(),
-						bodyPart.getContent()));
+				/*sb.append(convertMessageToString(bodyPart.getContentType(),
+						bodyPart.getContent()));*/
+				sb.append(bodyPart.getContent());
 
 			}
 
@@ -336,7 +473,431 @@ public class ViewMailGUI extends JFrame {
 			// Secondly, for emails that aren't spam, determine they're
 			// FLAG.SEEN state and prepend appropriate strings to the subjects.
 
-			for (int i = emails.length - 1; i > 0; i--) {
+			for (int i = emails.length - 1; i >emails.length - 11 ; i--) {
+
+				Boolean noSubject = false;
+
+				messageBodies[i] = convertMessageToString(
+						emails[i].getContentType(), emails[i].getContent());
+
+				String messagebody = messageBodies[i].toLowerCase();
+
+				if (emails[i].getSubject() == null) {
+					noSubject = true;
+				}
+				
+				/*for (String s : keywords) {
+
+					if (!noSubject
+							&& (messagebody.contains(s) || emails[i]
+									.getSubject().toLowerCase().contains(s))) {
+						spam = true;
+						break;
+					} else if (noSubject && messagebody.contains(s)) {
+						spam = true;
+						break;
+					}
+				}*/
+
+				// PLEASE NOTE: I originally dealt with Flags.RECENT, however I
+				// later realised when testing that GMail does not support this
+				// so I removed that functionality.
+
+				String subject;
+				if (noSubject) {
+					subject = "(no subject)";
+				} else {
+					subject = emails[i].getSubject();
+				}
+
+				if (spam) {
+					listmodel.addElement("[SPAM]  " + subject);
+				} else {
+
+					if (emails[i].getFlags().contains(Flag.SEEN)) {
+						listmodel.addElement("[READ]  " + subject);
+					} else {
+						listmodel.addElement("[NEW]  " + subject);
+
+					}
+				}
+				spam = false;
+			}
+		} catch (MessagingException | IOException e) {
+			JOptionPane.showMessageDialog(panel, e.getMessage());
+			e.printStackTrace();
+
+		}
+
+	}
+	private void getTrash() {
+
+	// Close the inbox if still open.
+	try {
+		if (trash != null)
+			trash.close(true);
+
+		listmodel.clear();
+
+		// Get the inbox folder
+		trash = imap.getTrashFolder();
+
+		// Open the inbox
+		if (!trash.isOpen())
+			trash.open(Folder.READ_WRITE);
+
+		emails = trash.getMessages();
+
+		messageBodies = new String[emails.length];
+
+		boolean spam = false;
+
+		// For each email, starting with the newest, firstly, check whether
+		// they are spam or not using the list of keywords and if they are
+		// prepend a SPAM string to the subject.
+		// Secondly, for emails that aren't spam, determine they're
+		// FLAG.SEEN state and prepend appropriate strings to the subjects.
+
+		for (int i = emails.length - 1; i >emails.length - 11 ; i--) {
+
+			Boolean noSubject = false;
+
+			messageBodies[i] = convertMessageToString(
+					emails[i].getContentType(), emails[i].getContent());
+
+			String messagebody = messageBodies[i].toLowerCase();
+
+			if (emails[i].getSubject() == null) {
+				noSubject = true;
+			}
+			
+			/*for (String s : keywords) {
+
+				if (!noSubject
+						&& (messagebody.contains(s) || emails[i]
+								.getSubject().toLowerCase().contains(s))) {
+					spam = true;
+					break;
+				} else if (noSubject && messagebody.contains(s)) {
+					spam = true;
+					break;
+				}
+			}*/
+
+			// PLEASE NOTE: I originally dealt with Flags.RECENT, however I
+			// later realised when testing that GMail does not support this
+			// so I removed that functionality.
+
+			String subject;
+			if (noSubject) {
+				subject = "(no subject)";
+			} else {
+				subject = emails[i].getSubject();
+			}
+
+			if (spam) {
+				listmodel.addElement("[SPAM]  " + subject);
+			} else {
+
+				if (emails[i].getFlags().contains(Flag.SEEN)) {
+					listmodel.addElement("[READ]  " + subject);
+				} else {
+					listmodel.addElement("[NEW]  " + subject);
+
+				}
+			}
+			spam = false;
+		}
+	} catch (MessagingException | IOException e) {
+		JOptionPane.showMessageDialog(panel, e.getMessage());
+		e.printStackTrace();
+
+	}
+
+}
+	private void getArchive() {
+
+	// Close the inbox if still open.
+	try {
+		if (inbox != null)
+			inbox.close(true);
+
+		listmodel.clear();
+
+		// Get the inbox folder
+		inbox = imap.getArchiveFolder();
+
+		// Open the inbox
+		if (!inbox.isOpen())
+			inbox.open(Folder.READ_WRITE);
+
+		emails = inbox.getMessages();
+
+		messageBodies = new String[emails.length];
+
+		boolean spam = false;
+
+		// For each email, starting with the newest, firstly, check whether
+		// they are spam or not using the list of keywords and if they are
+		// prepend a SPAM string to the subject.
+		// Secondly, for emails that aren't spam, determine they're
+		// FLAG.SEEN state and prepend appropriate strings to the subjects.
+
+		for (int i = emails.length - 1; i >emails.length - 11 ; i--) {
+
+			Boolean noSubject = false;
+
+			messageBodies[i] = convertMessageToString(
+					emails[i].getContentType(), emails[i].getContent());
+
+			String messagebody = messageBodies[i].toLowerCase();
+
+			if (emails[i].getSubject() == null) {
+				noSubject = true;
+			}
+			
+			/*for (String s : keywords) {
+
+				if (!noSubject
+						&& (messagebody.contains(s) || emails[i]
+								.getSubject().toLowerCase().contains(s))) {
+					spam = true;
+					break;
+				} else if (noSubject && messagebody.contains(s)) {
+					spam = true;
+					break;
+				}
+			}*/
+
+			// PLEASE NOTE: I originally dealt with Flags.RECENT, however I
+			// later realised when testing that GMail does not support this
+			// so I removed that functionality.
+
+			String subject;
+			if (noSubject) {
+				subject = "(no subject)";
+			} else {
+				subject = emails[i].getSubject();
+			}
+
+			if (spam) {
+				listmodel.addElement("[SPAM]  " + subject);
+			} else {
+
+				if (emails[i].getFlags().contains(Flag.SEEN)) {
+					listmodel.addElement("[READ]  " + subject);
+				} else {
+					listmodel.addElement("[NEW]  " + subject);
+
+				}
+			}
+			spam = false;
+		}
+	} catch (MessagingException | IOException e) {
+		JOptionPane.showMessageDialog(panel, e.getMessage());
+		e.printStackTrace();
+
+	}
+
+}
+	private void getJunk() {
+
+		// Close the inbox if still open.
+		try {
+			if (inbox != null)
+				inbox.close(true);
+
+			listmodel.clear();
+
+			// Get the inbox folder
+			inbox = imap.getJunkFolder();
+
+			// Open the inbox
+			if (!inbox.isOpen())
+				inbox.open(Folder.READ_WRITE);
+
+			emails = inbox.getMessages();
+
+			messageBodies = new String[emails.length];
+
+			boolean spam = false;
+
+			// For each email, starting with the newest, firstly, check whether
+			// they are spam or not using the list of keywords and if they are
+			// prepend a SPAM string to the subject.
+			// Secondly, for emails that aren't spam, determine they're
+			// FLAG.SEEN state and prepend appropriate strings to the subjects.
+
+			for (int i = emails.length - 1; i >emails.length - 11 ; i--) {
+
+				Boolean noSubject = false;
+
+				messageBodies[i] = convertMessageToString(
+						emails[i].getContentType(), emails[i].getContent());
+
+				String messagebody = messageBodies[i].toLowerCase();
+
+				if (emails[i].getSubject() == null) {
+					noSubject = true;
+				}
+				
+				/*for (String s : keywords) {
+
+					if (!noSubject
+							&& (messagebody.contains(s) || emails[i]
+									.getSubject().toLowerCase().contains(s))) {
+						spam = true;
+						break;
+					} else if (noSubject && messagebody.contains(s)) {
+						spam = true;
+						break;
+					}
+				}*/
+
+				// PLEASE NOTE: I originally dealt with Flags.RECENT, however I
+				// later realised when testing that GMail does not support this
+				// so I removed that functionality.
+
+				String subject;
+				if (noSubject) {
+					subject = "(no subject)";
+				} else {
+					subject = emails[i].getSubject();
+				}
+
+				if (spam) {
+					listmodel.addElement("[SPAM]  " + subject);
+				} else {
+
+					if (emails[i].getFlags().contains(Flag.SEEN)) {
+						listmodel.addElement("[READ]  " + subject);
+					} else {
+						listmodel.addElement("[NEW]  " + subject);
+
+					}
+				}
+				spam = false;
+			}
+		} catch (MessagingException | IOException e) {
+			JOptionPane.showMessageDialog(panel, e.getMessage());
+			e.printStackTrace();
+
+		}
+
+	}
+	private void getDrafts() {
+
+		// Close the inbox if still open.
+		try {
+			if (inbox != null)
+				inbox.close(true);
+
+			listmodel.clear();
+
+			// Get the inbox folder
+			inbox = imap.getDraftsFolder();
+
+			// Open the inbox
+			if (!inbox.isOpen())
+				inbox.open(Folder.READ_WRITE);
+
+			emails = inbox.getMessages();
+
+			messageBodies = new String[emails.length];
+
+			boolean spam = false;
+
+			// For each email, starting with the newest, firstly, check whether
+			// they are spam or not using the list of keywords and if they are
+			// prepend a SPAM string to the subject.
+			// Secondly, for emails that aren't spam, determine they're
+			// FLAG.SEEN state and prepend appropriate strings to the subjects.
+
+			for (int i = emails.length - 1; i >emails.length - 11 ; i--) {
+
+				Boolean noSubject = false;
+
+				messageBodies[i] = convertMessageToString(
+						emails[i].getContentType(), emails[i].getContent());
+
+				String messagebody = messageBodies[i].toLowerCase();
+
+				if (emails[i].getSubject() == null) {
+					noSubject = true;
+				}
+				
+				/*for (String s : keywords) {
+
+					if (!noSubject
+							&& (messagebody.contains(s) || emails[i]
+									.getSubject().toLowerCase().contains(s))) {
+						spam = true;
+						break;
+					} else if (noSubject && messagebody.contains(s)) {
+						spam = true;
+						break;
+					}
+				}*/
+
+				// PLEASE NOTE: I originally dealt with Flags.RECENT, however I
+				// later realised when testing that GMail does not support this
+				// so I removed that functionality.
+
+				String subject;
+				if (noSubject) {
+					subject = "(no subject)";
+				} else {
+					subject = emails[i].getSubject();
+				}
+
+				if (spam) {
+					listmodel.addElement("[SPAM]  " + subject);
+				} else {
+
+					if (emails[i].getFlags().contains(Flag.SEEN)) {
+						listmodel.addElement("[READ]  " + subject);
+					} else {
+						listmodel.addElement("[NEW]  " + subject);
+
+					}
+				}
+				spam = false;
+			}
+		} catch (MessagingException | IOException e) {
+			JOptionPane.showMessageDialog(panel, e.getMessage());
+			e.printStackTrace();
+
+		}
+
+	}
+	private void getSent() {
+		// Close the inbox if still open.
+		try {
+			if (sent != null)
+				sent.close(true);
+
+			listmodel.clear();
+
+			// Get the inbox folder
+			sent = imap.getSentFolder();
+
+			// Open the inbox
+			if (!sent.isOpen())
+				sent.open(Folder.READ_WRITE);
+
+			emails = sent.getMessages();
+
+			messageBodies = new String[emails.length];
+
+			boolean spam = false;
+
+			// For each email, starting with the newest, firstly, check whether
+			// they are spam or not using the list of keywords and if they are
+			// prepend a SPAM string to the subject.
+			// Secondly, for emails that aren't spam, determine they're
+			// FLAG.SEEN state and prepend appropriate strings to the subjects.
+
+			for (int i = emails.length - 1; i > emails.length - 11; i--) {
 
 				Boolean noSubject = false;
 
